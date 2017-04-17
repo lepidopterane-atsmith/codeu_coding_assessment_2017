@@ -14,6 +14,7 @@
 
 package com.google.codeu.codingchallenge;
 
+
 // edited by Sarah Abowitz 
 import java.util.LinkedList;
 import java.util.Stack;
@@ -23,6 +24,18 @@ final class MyJSONParser implements JSONParser {
   
   @Override
   public JSON parse(String in) throws IOException {
+    
+    LinkedList<String> names = new LinkedList<String>();
+    LinkedList<String> strings = new LinkedList<String>();
+    LinkedList<JSON> objects = new LinkedList<JSON>();
+    
+    //empty object case
+    if (in.compareTo("{ }") == 0) {
+       
+        return new MyJSON();
+    } 
+    
+    // whitespace removal  
     int lastMark = 0, totalMarks = 0; 
     String temp = "";
     for (int i = 0; i< in.length(); i++){
@@ -44,47 +57,52 @@ final class MyJSONParser implements JSONParser {
     }
     in = temp;
     
+    //onto the main parsing dealio
     int strCnt = 1, objCnt = 1;
-    LinkedList<String> names = new LinkedList<String>();
-    LinkedList<String> strings = new LinkedList<String>();
-    LinkedList<JSON> objects = new LinkedList<JSON>();
     Boolean objectMode = false;
-    int objectOpening = 0, closing = 0;
     
     while (in.length() > 0 ){
+        if (!objectMode && in.compareTo("}") == 0) {return new MyJSON(names, strings, objects);}
         int index = in.indexOf(':');
         int fQ = in.indexOf('"'); //fQ = first quotation mark
         String name = in.substring(fQ+1,index-1);
         
+        //objectMode looks for the current object so it may be parsed
         if(objectMode) {
             Stack<String> s = new Stack<String>();
             s.push("{");
             int from = 1;
             int rBrac = 0;
+            boolean emptyObj = false;
             while (!s.empty()){
                int lBrac = in.indexOf(123,from);
                rBrac = in.indexOf(125, from);
-               if(lBrac < rBrac) {
+               if(lBrac > -1 && lBrac < rBrac) {
                    from = lBrac;
                    s.push("{");
                 }
-               if (rBrac < lBrac) {
+               if (rBrac > -1 && rBrac < lBrac) {
                    from = rBrac;
                    s.pop();
                 }
             }
+            if (emptyObj) {
+                MyJSON nullJ = new MyJSON();
+                objects.add(null);
+            }
             if (rBrac+1 == in.length()){
-                objects.add(parse(in));
+                if (!emptyObj){ objects.add(parse(in));}
                 in = "";
             }else{
-                objects.add(parse(in.substring(0,rBrac+1)));
+                if (!emptyObj){objects.add(parse(in.substring(0,rBrac+1)));}
                 in = in.substring(rBrac+1);
             }
             objectMode = false;
         }
         
+        // and in case of !objectMode? String harvesting and control flow time.
         if (!objectMode){
-            if (in.charAt(index+1) == '"'){
+             if (in.charAt(index+1) == '"'){
                 char c = (char) strCnt;
                 String suffix = "S"+Character.toString(c);
                 name = name+suffix;
@@ -103,10 +121,10 @@ final class MyJSONParser implements JSONParser {
                 objCnt++;
                 objectMode = true;
             }
+           
         }
         
     }
-    // do something with "freddie" : "fish"
     
     return new MyJSON(names, strings, objects);
   }

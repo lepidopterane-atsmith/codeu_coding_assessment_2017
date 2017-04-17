@@ -15,10 +15,9 @@
 package com.google.codeu.codingchallenge;
 
 // edited by Sarah Abowitz. 
-// * These tests are not exhaustive!
-
 import java.util.Collection;
 import java.util.HashSet;
+import java.util.LinkedList;
 
 final class TestMain {
 
@@ -30,14 +29,15 @@ final class TestMain {
       @Override
       public void run(JSONFactory factory) throws Exception {
         final JSONParser parser = factory.parser();
-        //final JSON tazPizza = parser.parse("{}");
+        
         final JSON obj = parser.parse("{ }");
-
+        
         final Collection<String> strings = new HashSet<>();
-        obj.getStrings(strings);
-      
+        
+        obj.getStrings(strings); //I know what you want here but I'm not sure how to fix it
+        
         Asserts.isEqual(strings.size(), 0);
-
+        
         final Collection<String> objects = new HashSet<>();
         obj.getObjects(objects);
 
@@ -49,9 +49,11 @@ final class TestMain {
       @Override
       public void run(JSONFactory factory) throws Exception {
         final JSONParser parser = factory.parser();
-        final JSON obj = parser.parse("{ \"name\":\"sam doe\" }");
+        final JSON obj = parser.parse("{ \"name\":\"sam doe\" }"); //why you no parse
 
         Asserts.isEqual("sam doe", obj.getString("name"));
+        
+       // error: String index out of range -3
      }
     });
 
@@ -67,10 +69,37 @@ final class TestMain {
         Asserts.isNotNull(nameObj);
         Asserts.isEqual("sam", nameObj.getString("first"));
         Asserts.isEqual("doe", nameObj.getString("last"));
+        //ok, this one just crashes with an out-of-memory error
       }
     });
 
-    /*tests.run(new JSONFactory(){
+    /* I've commented this test out bc it's the one I wanted to ultimately use but bc of debugging troubles I couldn't
+     * utilize this to its fullest.
+     * 
+     * tests.add("TAZ Pizza", new Test() {
+      @Override
+      public void run(JSONFactory factory) throws Exception {
+
+        final JSONParser parser = factory.parser();
+        
+        //This is a complex test case I developed to test what TestMain couldn't initially.
+        //It's called TAZ Pizza because it's an object containing various pizza orders from characters in 
+        //The Adventure Zone
+        final JSON obj = parser.parse("{\"Merle\":\"plain\"},\"Angus\":{\"half1\":\"bacon\", \"half2\":\"extra-cheese\"},\"Magnus\":\"meatball\", \"Lucretia\":{\"pizza1\":\"buffalo-chicken\",\"pizza2\":\"onion\",\"pizza3\":\"olive\"},\"Taako\":\"pepperoni\"}");
+        
+        System.out.println(obj.getString("Merle"));
+        
+        final JSON nameObj = obj.getObject("name");
+        
+        Asserts.isNotNull(nameObj);
+        Asserts.isEqual("sam", nameObj.getString("first"));
+        Asserts.isEqual("doe", nameObj.getString("last"));
+      }
+    });*/
+    
+    
+    
+    tests.run(new JSONFactory(){
       @Override
       public JSONParser parser() {
         return new MyJSONParser();
@@ -80,6 +109,6 @@ final class TestMain {
       public JSON object() {
         return new MyJSON();
       }
-    }); don't think we'll need these, hm??*/ 
+    }); 
   }
 }

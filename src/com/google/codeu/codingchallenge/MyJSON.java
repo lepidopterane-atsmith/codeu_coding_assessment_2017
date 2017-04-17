@@ -26,6 +26,10 @@ final class MyJSON implements JSON {
   
   //because of the way I'm encoding these locations, 
   //theoretically the largest object has 255 strings and 255 objects in there.
+ 
+  public MyJSON() {
+      //
+    }
   
   public MyJSON(LinkedList<String> k, LinkedList<String> s, LinkedList<JSON> o) {
       keys = k;
@@ -33,6 +37,9 @@ final class MyJSON implements JSON {
       objects = o;
       
     }
+  
+    // For get & set methods: I know you could use a hashtable for O(1) performance, but we only learned the theory
+    // in class and I don't know how to code that yet
     
   @Override
   public JSON getObject(String name) {
@@ -116,15 +123,30 @@ final class MyJSON implements JSON {
 
   @Override
   public void getObjects(Collection<String> names) {
-    for (String k : keys) {
-        if (k.indexOf("O") == k.length()-2) {names.add(k); }
+    if (keys.size()>0){
+          for (String k : keys) {
+            if (k.indexOf("O") == k.length()-2) {names.add(k); }
+        }
+        if (names.size() == 0){
+            names.add("no objects here");
+        }
+    }else {
+        names.add("no objects here");
     }
   }
 
   @Override
   public void getStrings(Collection<String> names) {
-    for (String k : keys) {
-        if (k.indexOf("S") == k.length()-2) {names.add(k); }
+    if (keys.size() > 0){
+        for (String k : keys) {
+            if (k.indexOf("S") == k.length()-2) {names.add(k); }
+        }
+        if (names.size() == 0){
+            names.add("no strings here");
+        }
+    } else {
+        names.add("no strings here");
     }
+    
   }
 }
