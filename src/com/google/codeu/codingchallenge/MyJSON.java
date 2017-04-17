@@ -14,41 +14,117 @@
 
 package com.google.codeu.codingchallenge;
 
+// edited by Sarah Abowitz 
 import java.util.Collection;
+import java.util.LinkedList;
 
 final class MyJSON implements JSON {
-
+    
+  private LinkedList<String> keys; // where we'll keep our names
+  private LinkedList<String> strings; // strings
+  private LinkedList<JSON> objects; // and objects
+  
+  //because of the way I'm encoding these locations, 
+  //theoretically the largest object has 255 strings and 255 objects in there.
+  
+  public MyJSON(LinkedList<String> k, LinkedList<String> s, LinkedList<JSON> o) {
+      keys = k;
+      strings = s;
+      objects = o;
+      
+    }
+    
   @Override
   public JSON getObject(String name) {
-    // TODO: implement this
+    String index = "";
+    name=name+"O";
+    for (String k:keys) {
+        if(k.startsWith(name)){
+            index = k;
+            break;
+        }
+    }
+    char c = index.charAt(index.length()-1);
+    int objIndex = Character.getNumericValue(c);
+    int cnt = 1;
+    for (JSON o: objects){
+        if (cnt == objIndex){return o;}
+        cnt++;
+    }
     return null;
   }
 
   @Override
   public JSON setObject(String name, JSON value) {
-    // TODO: implement this
+    String index = "";
+    name=name+"O";
+    for (String k:keys) {
+        if(k.startsWith(name)){
+            index = k;
+            break;
+        }
+    }
+    char c = index.charAt(index.length()-1);
+    int objIndex = Character.getNumericValue(c);
+    int cnt = 1;
+    for (JSON o: objects){
+        if (cnt == objIndex){o = value; break;}
+        cnt++;
+    }
     return this;
   }
 
   @Override
   public String getString(String name) {
-    // TODO: implement this
+    String index = "";
+    name = name+"S";
+    for (String k:keys) {
+        if(k.startsWith(name)){
+            index = k;
+            break;
+        }
+    }
+    char c = index.charAt(index.length()-1);
+    int strIndex = Character.getNumericValue(c);
+    int cnt = 1;
+    for (String s: strings){
+        if (cnt == strIndex){return s;}
+        cnt++;
+    }
     return null;
   }
 
   @Override
   public JSON setString(String name, String value) {
-    // TODO: implement this
+    String index = "";
+    name = name+"S";
+    for (String k:keys) {
+        if(k.startsWith(name)){
+            index = k;
+            break;
+        }
+    }
+    char c = index.charAt(index.length()-1);
+    int strIndex = Character.getNumericValue(c);
+    int cnt = 1;
+    for (String s: strings){
+        if (cnt == strIndex){s = value; break;}
+        cnt++;
+    }
     return this;
   }
 
   @Override
   public void getObjects(Collection<String> names) {
-    // TODO: implement this
+    for (String k : keys) {
+        if (k.indexOf("O") == k.length()-2) {names.add(k); }
+    }
   }
 
   @Override
   public void getStrings(Collection<String> names) {
-    // TODO: implement this
+    for (String k : keys) {
+        if (k.indexOf("S") == k.length()-2) {names.add(k); }
+    }
   }
 }
