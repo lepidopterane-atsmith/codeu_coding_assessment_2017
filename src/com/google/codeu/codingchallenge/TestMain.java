@@ -34,7 +34,7 @@ final class TestMain {
         
         final Collection<String> strings = new HashSet<>();
         
-        obj.getStrings(strings); //I know what you want here but I'm not sure how to fix it
+        obj.getStrings(strings); 
         
         Asserts.isEqual(strings.size(), 0);
         
@@ -53,7 +53,7 @@ final class TestMain {
 
         Asserts.isEqual("sam doe", obj.getString("name"));
         
-       // error: String index out of range -3
+       // error: String index out of range -3...or -1...I'm still working on it
      }
     });
 
@@ -96,8 +96,6 @@ final class TestMain {
         Asserts.isEqual("doe", nameObj.getString("last"));
       }
     });*/
-    
-    
     
     tests.run(new JSONFactory(){
       @Override

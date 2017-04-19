@@ -38,24 +38,28 @@ final class MyJSONParser implements JSONParser {
     // whitespace removal  
     int lastMark = 0, totalMarks = 0; 
     String temp = "";
+    boolean diagnostic = false; 
     for (int i = 0; i< in.length(); i++){
         if (in.charAt(i)=='"'){
             totalMarks++;
             if (totalMarks % 2 != 0){
-                String stripped = in.substring(lastMark+1,i);
+                String stripped = in.substring(lastMark,i+1).replaceAll("\\s+","");
                 temp = temp+stripped;
             }             
             lastMark = i;
+            diagnostic = true;
         }
-        if(totalMarks % 2 == 0){
+        if(totalMarks % 2 == 0 && diagnostic){
             if(i == in.length()-1){
                 temp = temp+in.substring(i);
             } else {
-                temp = temp+in.substring(i+1);
+                temp = temp+in.substring(i-1);
             }
+            diagnostic= false;
         }
     }
     in = temp;
+    //System.out.println(temp);
     
     //onto the main parsing dealio
     int strCnt = 1, objCnt = 1;

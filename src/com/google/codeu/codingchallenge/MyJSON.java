@@ -23,19 +23,20 @@ final class MyJSON implements JSON {
   private LinkedList<String> keys; // where we'll keep our names
   private LinkedList<String> strings; // strings
   private LinkedList<JSON> objects; // and objects
+  private boolean isEmpty;
   
   //because of the way I'm encoding these locations, 
   //theoretically the largest object has 255 strings and 255 objects in there.
  
   public MyJSON() {
-      //
+      isEmpty = true;
     }
   
   public MyJSON(LinkedList<String> k, LinkedList<String> s, LinkedList<JSON> o) {
       keys = k;
       strings = s;
       objects = o;
-      
+      isEmpty = false;
     }
   
     // For get & set methods: I know you could use a hashtable for O(1) performance, but we only learned the theory
@@ -123,30 +124,36 @@ final class MyJSON implements JSON {
 
   @Override
   public void getObjects(Collection<String> names) {
-    if (keys.size()>0){
+    LinkedList<String> preNames = new LinkedList<String>();
+      if (!isEmpty){
           for (String k : keys) {
-            if (k.indexOf("O") == k.length()-2) {names.add(k); }
+            if (k.indexOf("O") == k.length()-2) {preNames.add(k); }
         }
         if (names.size() == 0){
-            names.add("no objects here");
+            //
         }
     }else {
-        names.add("no objects here");
+        //
     }
+    names.clear();
+    names.addAll(preNames);
   }
 
   @Override
   public void getStrings(Collection<String> names) {
-    if (keys.size() > 0){
+    LinkedList<String> preNames = new LinkedList<String>();
+    
+      if (!isEmpty){
         for (String k : keys) {
-            if (k.indexOf("S") == k.length()-2) {names.add(k); }
+            if (k.indexOf("S") == k.length()-2) {preNames.add(k); }
         }
         if (names.size() == 0){
-            names.add("no strings here");
+            //
         }
     } else {
-        names.add("no strings here");
+        //
     }
-    
+    names.clear();
+    names.addAll(preNames);
   }
 }
