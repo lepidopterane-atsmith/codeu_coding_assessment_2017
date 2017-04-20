@@ -25,9 +25,7 @@ final class MyJSON implements JSON {
   private LinkedList<JSON> objects; // and objects
   private boolean isEmpty;
   
-  //because of the way I'm encoding these locations, 
-  //theoretically the largest object has 255 strings and 255 objects in there.
- 
+  
   public MyJSON() {
       isEmpty = true;
     }
@@ -39,8 +37,8 @@ final class MyJSON implements JSON {
       isEmpty = false;
     }
   
-    // For get & set methods: I know you could use a hashtable for O(1) performance, but we only learned the theory
-    // in class and I don't know how to code that yet
+    // For get & set methods: I know you could use a hashmap for O(1) performance, but we only learned the theory
+    // in class and I don't have the time to redesign the whole class & parser for that, sorry
     
   @Override
   public JSON getObject(String name) {
@@ -53,7 +51,7 @@ final class MyJSON implements JSON {
         }
     }
     char c = index.charAt(index.length()-1);
-    int objIndex = Character.getNumericValue(c);
+    int objIndex = Character.getNumericValue(c)-31;
     int cnt = 1;
     for (JSON o: objects){
         if (cnt == objIndex){return o;}
@@ -93,10 +91,13 @@ final class MyJSON implements JSON {
         }
     }
     char c = index.charAt(index.length()-1);
-    int strIndex = Character.getNumericValue(c);
+    int strIndex = Character.getNumericValue(c)-31;
     int cnt = 1;
+    System.out.println("Strings include:");
     for (String s: strings){
+        System.out.println(s);
         if (cnt == strIndex){return s;}
+        
         cnt++;
     }
     return null;

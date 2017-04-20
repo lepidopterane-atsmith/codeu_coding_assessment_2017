@@ -35,34 +35,28 @@ final class MyJSONParser implements JSONParser {
         return new MyJSON();
     } 
     
-    // whitespace removal  
-    int lastMark = 0, totalMarks = 0; 
+    // whitespace removal. updated so that's less painful as of 1.2  
+    int totalMarks = 1; 
+    String[] inparts = in.split("\"");
+   
     String temp = "";
-    boolean diagnostic = false; 
-    for (int i = 0; i< in.length(); i++){
-        if (in.charAt(i)=='"'){
-            totalMarks++;
-            if (totalMarks % 2 != 0){
-                String stripped = in.substring(lastMark,i+1).replaceAll("\\s+","");
-                temp = temp+stripped;
-            }             
-            lastMark = i;
-            diagnostic = true;
+    boolean xxx = false;
+    for (String s:inparts){
+        System.out.println(s);
+        if (totalMarks % 2 != 0) {
+            s = s.replaceAll("\\s+","");
+            
         }
-        if(totalMarks % 2 == 0 && diagnostic){
-            if(i == in.length()-1){
-                temp = temp+in.substring(i);
-            } else {
-                temp = temp+in.substring(i-1);
-            }
-            diagnostic= false;
-        }
+        temp = temp+s+"\"";
+        totalMarks++;
     }
+    
+    temp = temp.substring(0,temp.length()-1);
     in = temp;
     //System.out.println(temp);
     
-    //onto the main parsing dealio
-    int strCnt = 1, objCnt = 1;
+    //onto the main parsing dealio. 32 is our 1 here because of the nature of encoding location
+    int strCnt = 32, objCnt = 32;
     Boolean objectMode = false;
     
     while (in.length() > 0 ){
@@ -111,6 +105,7 @@ final class MyJSONParser implements JSONParser {
                 String suffix = "S"+Character.toString(c);
                 name = name+suffix;
                 names.add(name);
+                System.out.println(name);
                 strCnt++;
                 in = in.substring(index+2);
                 int lQ = in.indexOf('"');
